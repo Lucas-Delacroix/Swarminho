@@ -55,7 +55,7 @@ def memory_usage_kb(pid: int) -> Optional[int]:
                     return None
     return None
 
- def _build_wrapped_command(command: str, mem_mb: Optional[int]) -> str:
+def _build_wrapped_command(command: str, mem_mb: Optional[int]) -> str:
     if mem_mb is not None:
         mem_kb = mem_mb * 1024
         return f"ulimit -v {mem_kb}; exec {command}"
