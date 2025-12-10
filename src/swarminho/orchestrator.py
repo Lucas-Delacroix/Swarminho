@@ -25,6 +25,19 @@ class Orchestrator:
         self.containers: Dict[str, ContainerInfo] = {}
         
     def create_container(self, name: str, command: str, mem_mb: Optional[int] = None):
+        """_summary_
+
+        Args:
+            name (str): _description_
+            command (str): _description_
+            mem_mb (Optional[int], optional): _description_. Defaults to None.
+
+        Raises:
+            ValueError: _description_
+
+        Returns:
+            _type_: _description_
+        """
         if name in self.containers:
             raise ValueError(f"Container with name {name} already exists.")
         
