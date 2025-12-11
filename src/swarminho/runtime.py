@@ -1,6 +1,7 @@
 import subprocess 
 from pathlib import Path
 from typing import Optional
+import os
 
 from .filesystem import (
     prepare_rootfs,
@@ -38,6 +39,26 @@ def is_container_running(pid: int) -> bool:
     except subprocess.CalledProcessError:
         return False
 
+
+def cpu_time_seconds(pid: int) -> Optional[float]:
+    """
+    Retorna o tempo total de CPU (user+system) usado pelo processo, em segundos,
+    ou None se não for possível ler /proc/<pid>/stat.
+    """
+    stat_path = Path(f"/proc/{pid}/stat")
+    if not stat_path.exists():
+        return None
+
+    try:
+        fields = stat_path.read_text().split()
+        utime = int(fields[13])
+        stime = int(fields[14])
+    except (IndexError, ValueError):
+        return None
+
+    clock_ticks = os.sysconf(os.sysconf_names["SC_CLK_TCK"])
+    return (utime + stime) / clock_ticks
+    
     
 def memory_usage_kb(pid: int) -> Optional[int]:
     status_path = Path(f"/proc/{pid}/status")
