@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from enum import Enum
 from typing import Dict, List, Optional
 import os
 import signal
@@ -8,14 +7,9 @@ import time
 from .filesystem import read_logs, remove_container_storage
 from .runtime import start_container, is_container_running, memory_usage_kb
 from .metrics import get_total_memory_mb
+from .containerstatus import ContainerStatus
 
 MEMORY_THRESHOLD_FRACTION = 0.2
-
-class ContainerStatus(str, Enum):
-    PENDING = "PENDING"
-    RUNNING = "RUNNING"
-    TERMINATED = "TERMINATED"
-    FAILED = "FAILED"
 
 @dataclass
 class ContainerInfo:
