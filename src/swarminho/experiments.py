@@ -30,9 +30,6 @@ from .metrics import (
     get_total_memory_mb,
 )
 
-# ---------------------------------------------------------------------------
-# MODELOS DE DADOS
-# ---------------------------------------------------------------------------
 
 @dataclass
 class Snapshot:
@@ -50,9 +47,6 @@ class ExperimentResult:
     notes: str = ""
 
 
-# ---------------------------------------------------------------------------
-# FUNÇÕES AUXILIARES
-# ---------------------------------------------------------------------------
 
 def _snapshot(orch: Orchestrator, label: str) -> Snapshot:
     orch_metrics = collect_orchestrator_metrics(orch, MEMORY_THRESHOLD_FRACTION)
@@ -110,9 +104,6 @@ def _save_result(result: ExperimentResult, output: Path):
     print(f"\n[OK] Resultado salvo em: {output}")
 
 
-# ---------------------------------------------------------------------------
-# EXPERIMENTOS
-# ---------------------------------------------------------------------------
 
 def experiment_minimal(sleep_seconds: float = 2.0, memory_limit_mb: int = 64, sample_interval: float = 0.5):
     orch = Orchestrator()
@@ -216,9 +207,6 @@ def experiment_memory_pressure(per_container_mb: int = 128, max_containers: int 
     return result
 
 
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
 
 def build_arg_parser():
     parser = argparse.ArgumentParser(
@@ -263,22 +251,17 @@ def main(argv=None) -> int:
     else:
         parser.error("Experimento inválido.")
 
-    # Caminho automático caso --output não seja usado
     output_path = args.output or _auto_output_path(result.name)
 
-    # Salvar JSON
     _save_result(result, output_path)
 
-    # Print resumo no terminal
     last = result.snapshots[-1]
     print("\n=== RESUMO FINAL ===")
     print(json.dumps(last.orch_metrics, indent=2))
     return 0
 
 
-# ---------------------------------------------------------------------------
-# SUPORTE: python -m swarminho.experiments
-# ---------------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     import sys
