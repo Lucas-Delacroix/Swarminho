@@ -5,6 +5,7 @@ import readline
 from typing import Optional, Sequence
 
 from src.swarminho.orchestrator import Orchestrator
+from src.swarminho.axaloti import print_banner
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="swarminho", add_help=False)
@@ -102,8 +103,9 @@ def repl() -> int:
     """
     orch = Orchestrator()
     parser = build_parser()
+    print_banner()
 
-    print("Swarminho interactive shell. Type 'help' for commands, 'exit' to quit.")
+    print("Swarminho interactive shell! Type 'help' for commands, 'exit' to quit.")
 
     while True:
         try:
