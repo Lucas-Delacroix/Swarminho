@@ -15,7 +15,6 @@ def start_container(name:str, command: str, mem_mb: Optional[int] = None) -> int
 
     stdout_f = stdout_log_path(name).open("ab")
     stderr_f = stderr_log_path(name).open("ab")
-    # TODO: IMPLEMENTAR POLITICA DE MEMORIA
     wrapped_cmd = _build_wrapped_command(command, mem_mb)
     proc = subprocess.Popen(
         ["bash", "-lc", wrapped_cmd],
