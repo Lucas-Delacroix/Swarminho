@@ -12,13 +12,41 @@ def _ensure_containers_root() -> None:
     """Garante que o diretório raiz dos containers existe."""
     CONTAINERS_ROOT.mkdir(parents=True, exist_ok=True)
 
-def _validate_container_name(name: str) -> None:
-    """Valida o nome do container para evitar problemas de segurança."""
-    if "/" in name or "\\" in name or ".." in name:
-        raise ValueError(f"Nome de container inválido: {name}")
+import re
 
-    if not name.isidentifier():
-        raise ValueError(f"Nome de container inválido: {name}")
+def _validate_container_name(name: str) -> None:
+    """Valida o nome do container para evitar problemas de segurança.
+
+    Regras:
+    - permitido: letras, números, '.', '_' e '-'
+    - proibido: '/', '\\', sequência '..' (path traversal)
+    - não pode ser vazio
+    - não pode começar com '.' (evita arquivos ocultos) nem com '-' (pode confundir flags)
+    - comprimento máximo: 255 caracteres
+    """
+    if not name:
+        raise ValueError("Nome de container inválido: nome vazio")
+
+    # proíbe barras (paths) e path traversal
+    if "/" in name or "\\" in name:
+        raise ValueError(f"Nome de container inválido (não deve conter '/' ou '\\\\'): {name!r}")
+
+    if ".." in name:
+        raise ValueError(f"Nome de container inválido (não deve conter '..'): {name!r}")
+
+    # não permitir nomes iniciando com '.' ou '-' (evita hidden files e confusão com flags)
+    if name[0] in {".", "-"}:
+        raise ValueError(f"Nome de container inválido (não pode começar com '.' ou '-'): {name!r}")
+
+    if len(name) > 255:
+        raise ValueError(f"Nome de container inválido (comprimento maior que 255): {name!r}")
+
+    # somente caracteres alfanuméricos, ponto, underline e hífen
+    if not re.fullmatch(r"[A-Za-z0-9._-]+", name):
+        raise ValueError(
+            f"Nome de container inválido (caracteres permitidos: letras, números, '.', '_' e '-'): {name!r}"
+        )
+
 
 def container_path(name: str) -> Path:
     """Retorna o caminho completo do container dado seu nome."""
