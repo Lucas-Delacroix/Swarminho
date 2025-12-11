@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from src.swarminho.filesystem import (
+from .filesystem import (
     prepare_rootfs,
     prepare_logs_dir,
     stdout_log_path,

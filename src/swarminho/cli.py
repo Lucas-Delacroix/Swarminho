@@ -4,8 +4,8 @@ import shlex
 import readline
 from typing import Optional, Sequence
 
-from src.swarminho.orchestrator import Orchestrator
-from src.swarminho.axaloti import print_banner
+from .orchestrator import Orchestrator
+from .axaloti import print_banner
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="swarminho", add_help=False)

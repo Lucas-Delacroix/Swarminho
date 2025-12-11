@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional
 
-from src.swarminho.filesystem import read_logs
-from src.swarminho.runtime import start_container, is_container_running, memory_usage_kb
+from .filesystem import read_logs
+from .runtime import start_container, is_container_running, memory_usage_kb
 
 
 class ContainerStatus(str, Enum):
