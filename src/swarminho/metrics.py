@@ -4,7 +4,7 @@ import os
 
 from .runtime import memory_usage_kb
 from .filesystem import container_path, CONTAINERS_ROOT, stdout_log_path, stderr_log_path
-from orchestrator import ContainerStatus
+from .orchestrator import ContainerStatus
 
 
 def get_total_memory_mb() -> int:
