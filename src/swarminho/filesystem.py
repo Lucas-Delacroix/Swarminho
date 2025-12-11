@@ -116,9 +116,6 @@ def read_logs(name: str) -> tuple[str, str]:
 def remove_container_storage(name: str) -> None:
     """
     Remove totalmente os dados de um container (rootfs + logs).
-
-    ⚠️ Cuidado: isso apaga tudo em containers/<name>.
-    Não deve ser chamado se o processo ainda estiver rodando.
     """
     cdir = container_path(name)
     if cdir.exists():

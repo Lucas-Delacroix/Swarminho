@@ -41,7 +41,7 @@ def handle_ps(orch: Orchestrator, args: argparse.Namespace) -> int:
     print(f"{'NAME':15} {'PID':8} {'STATUS':10} {'MEM_LIMIT(MB)':15}")
     print("-" * 60)
     for c in containers:
-        print(f"{c.name:15} {str(c.pid or '-'):8} {c.status.value:10} {str(c.mem_mb or '-'):15}")
+        print(f"{c.name:15} {str(c.pid or '-'):8} {c.status.value:10} {str(c.memory_limit_mb or '-'):15}")
     return 0
 
 

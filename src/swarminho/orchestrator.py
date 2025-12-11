@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional
 import os
@@ -24,6 +24,9 @@ class ContainerInfo:
     memory_limit_mb: Optional[int]
     pid: Optional[int] = None
     status: ContainerStatus = ContainerStatus.PENDING
+    created_at: float = field(default_factory=time.time)
+    started_at: Optional[float] = None
+    stopped_at: Optional[float] = None
 
 class Orchestrator:
     def __init__(self):
@@ -31,6 +34,7 @@ class Orchestrator:
         self.rejected_containers: int = 0
         self.created_count: int = 0
         self.peak_running: int = 0
+        
 
     def create_container(self, name: str, command: str, memory_limit_mb: Optional[int] = None) -> ContainerInfo:
         if name in self.containers:
@@ -45,6 +49,7 @@ class Orchestrator:
         container_info = ContainerInfo(name=name, command=command, memory_limit_mb=memory_limit_mb)
 
         pid = start_container(name, command, memory_limit_mb)
+        container_info.started_at = time.time()
 
         container_info.pid = pid
         container_info.status = ContainerStatus.RUNNING
@@ -58,6 +63,7 @@ class Orchestrator:
 
         return container_info
 
+    
     def list_containers(self) -> List[ContainerInfo]:
         for container in self.containers.values():
             if container.pid is None:
@@ -66,65 +72,112 @@ class Orchestrator:
                 container.status = ContainerStatus.RUNNING
             else:
                 if container.status == ContainerStatus.RUNNING:
-                    container.status = ContainerStatus.TERMINATED
+                    self._mark_terminated(container)
         return list(self.containers.values())
 
+    
     def get_logs(self, name: str) -> tuple[str, str]:
         if name not in self.containers:
             raise ValueError(f"No container found with name {name}.")
         return read_logs(name)
 
+    
     def get_memory_usage_kb(self, name: str) -> Optional[int]:
         info = self.containers.get(name)
         if not info or info.pid is None:
             return None
         return memory_usage_kb(info.pid)
 
+
+    def _mark_terminated(self, info: ContainerInfo) -> None:
+        """
+        Marca o container como TERMINATED e registra o timestamp de parada
+        se ainda não tiver sido registrado.
+        """
+        info.status = ContainerStatus.TERMINATED
+        if info.stopped_at is None:
+            info.stopped_at = time.time()
+
+    
+    def _mark_failed(self, info: ContainerInfo) -> None:
+        """
+        Marca o container como FAILED e registra o timestamp de parada
+        se ainda não tiver sido registrado.
+        """
+        info.status = ContainerStatus.FAILED
+        if info.stopped_at is None:
+            info.stopped_at = time.time()
+
+
     def stop_container(self, name: str, timeout: float = 3.0) -> None:
         """
         Tenta terminar gracilmente o processo do container (SIGTERM) e, se necessário,
         força com SIGKILL depois de `timeout` segundos.
-        Atualiza o status do ContainerInfo.
+        Atualiza o status e o timestamp de parada.
         """
         info = self.containers.get(name)
         if not info:
             raise ValueError(f"Container {name!r} não encontrado.")
+
         if info.pid is None:
-            info.status = ContainerStatus.TERMINATED
+            self._mark_terminated(info)
             return
 
         pid = info.pid
-        try:
-            os.kill(pid, signal.SIGTERM)
-        except ProcessLookupError:
-            info.status = ContainerStatus.TERMINATED
-            return
-        except PermissionError:
-            info.status = ContainerStatus.FAILED
+
+        if not self._send_signal_with_status(info, pid, signal.SIGTERM):
             return
 
+        if self._wait_until_stopped(info, pid, timeout):
+            return
+
+        if not self._send_signal_with_status(info, pid, signal.SIGKILL):
+            return
+
+        
+        time.sleep(0.1)
+        if not is_container_running(pid):
+            self._mark_terminated(info)
+        else:
+            self._mark_failed(info)
+
+
+    def _send_signal_with_status(self, info: ContainerInfo, pid: int, sig: int) -> bool:
+        """
+        Envia um sinal ao processo e ajusta o status em caso de erro.
+
+        Returns:
+            True se o sinal foi enviado com sucesso e faz sentido continuar o fluxo.
+            False se o processo já não existe ou houve erro de permissão
+            (nesse caso o status é atualizado e o chamador deve interromper o fluxo).
+        """
+        try:
+            os.kill(pid, sig)
+            return True
+        except ProcessLookupError:
+            self._mark_terminated(info)
+            return False
+        except PermissionError:
+            self._mark_failed(info)
+            return False
+
+    def _wait_until_stopped(self, info: ContainerInfo, pid: int, timeout: float) -> bool:
+        """
+        Aguarda até `timeout` segundos para o processo terminar.
+
+        Returns:
+            True se o processo terminou dentro do prazo (status ajustado para TERMINATED).
+            False se ainda estiver rodando após o timeout.
+        """
         deadline = time.time() + timeout
         while time.time() < deadline:
             if not is_container_running(pid):
-                info.status = ContainerStatus.TERMINATED
-                return
+                self._mark_terminated(info)
+                return True
             time.sleep(0.1)
-
-        try:
-            os.kill(pid, signal.SIGKILL)
-        except ProcessLookupError:
-            info.status = ContainerStatus.TERMINATED
-            return
-        except PermissionError:
-            info.status = ContainerStatus.FAILED
-            return
-
-        time.sleep(0.1)
-        if not is_container_running(pid):
-            info.status = ContainerStatus.TERMINATED
-        else:
-            info.status = ContainerStatus.FAILED
-
+        return False
+        
+    
     def remove_container(self, name: str, force_stop: bool = True) -> None:
         """
         Remove o container da tabela + remove dados em disco.
@@ -138,7 +191,7 @@ class Orchestrator:
             try:
                 self.stop_container(name)
             except Exception:
-                info.status = ContainerStatus.FAILED
+                self._mark_failed(info)
 
         try:
             remove_container_storage(name)
@@ -146,6 +199,7 @@ class Orchestrator:
             pass
 
         del self.containers[name]
+
 
     def _current_committed_memory_limit_mb(self) -> int:
         """
