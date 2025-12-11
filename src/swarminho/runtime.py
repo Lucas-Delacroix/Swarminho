@@ -9,13 +9,13 @@ from .filesystem import (
     stderr_log_path,
 )
 
-def start_container(name:str, command: str, mem_mb: Optional[int] = None) -> int:
+def start_container(name:str, command: str, memory_limit_mb: Optional[int] = None) -> int:
     rootfs: Path = prepare_rootfs(name)
     logs_dir: Path = prepare_logs_dir(name)
 
     stdout_f = stdout_log_path(name).open("ab")
     stderr_f = stderr_log_path(name).open("ab")
-    wrapped_cmd = _build_wrapped_command(command, mem_mb)
+    wrapped_cmd = _build_wrapped_command(command, memory_limit_mb)
     proc = subprocess.Popen(
         ["bash", "-lc", wrapped_cmd],
         cwd=str(rootfs),
@@ -54,8 +54,8 @@ def memory_usage_kb(pid: int) -> Optional[int]:
                     return None
     return None
 
-def _build_wrapped_command(command: str, mem_mb: Optional[int]) -> str:
-    if mem_mb is not None:
-        mem_kb = mem_mb * 1024
+def _build_wrapped_command(command: str, memory_limit_mb: Optional[int]) -> str:
+    if memory_limit_mb is not None:
+        mem_kb = memory_limit_mb * 1024
         return f"ulimit -v {mem_kb}; exec {command}"
     return f"exec {command}"
