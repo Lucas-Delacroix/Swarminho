@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "swarminho"
+version = "0.1.0"
+description = "Simulação de um Orquestrador de Containers para Estudo de Virtualização em Nível de Sistema Operacional, Gerenciamento de Memória e Sistemas de Arquivos"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+swarminho = "swarminho.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
