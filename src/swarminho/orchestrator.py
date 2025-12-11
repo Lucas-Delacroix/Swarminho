@@ -1,8 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional
+import os
+import signal
+import time
 
-from .filesystem import read_logs
+from .filesystem import read_logs, remove_container_storage
 from .runtime import start_container, is_container_running, memory_usage_kb
 from .metrics import get_total_memory_mb
 
@@ -25,32 +28,33 @@ class ContainerInfo:
 class Orchestrator:
     def __init__(self):
         self.containers: Dict[str, ContainerInfo] = {}
-        
-    def create_container(self, name: str, command: str, memory_limit_mb: Optional[int] = None):
-        """_summary_
+        self.rejected_containers: int = 0
+        self.created_count: int = 0
+        self.peak_running: int = 0
 
-        Args:
-            name (str): _description_
-            command (str): _description_
-            memory_limit_mb (Optional[int], optional): _description_. Defaults to None.
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            _type_: _description_
-        """
+    def create_container(self, name: str, command: str, memory_limit_mb: Optional[int] = None) -> ContainerInfo:
         if name in self.containers:
             raise ValueError(f"Container with name {name} already exists.")
-        
-        self._ensure_memory_policy_allows(name, memory_limit_mb)
+
+        try:
+            self._ensure_memory_policy_allows(name, memory_limit_mb)
+        except RuntimeError:
+            self.rejected_containers += 1
+            raise
+
         container_info = ContainerInfo(name=name, command=command, memory_limit_mb=memory_limit_mb)
 
         pid = start_container(name, command, memory_limit_mb)
-        
+
         container_info.pid = pid
         container_info.status = ContainerStatus.RUNNING
         self.containers[name] = container_info
+
+        self.created_count += 1
+
+        current_running = sum(1 for c in self.containers.values() if c.status == ContainerStatus.RUNNING)
+        if current_running > self.peak_running:
+            self.peak_running = current_running
 
         return container_info
 
@@ -75,25 +79,82 @@ class Orchestrator:
         if not info or info.pid is None:
             return None
         return memory_usage_kb(info.pid)
-    
+
+    def stop_container(self, name: str, timeout: float = 3.0) -> None:
+        """
+        Tenta terminar gracilmente o processo do container (SIGTERM) e, se necessário,
+        força com SIGKILL depois de `timeout` segundos.
+        Atualiza o status do ContainerInfo.
+        """
+        info = self.containers.get(name)
+        if not info:
+            raise ValueError(f"Container {name!r} não encontrado.")
+        if info.pid is None:
+            info.status = ContainerStatus.TERMINATED
+            return
+
+        pid = info.pid
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except ProcessLookupError:
+            info.status = ContainerStatus.TERMINATED
+            return
+        except PermissionError:
+            info.status = ContainerStatus.FAILED
+            return
+
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            if not is_container_running(pid):
+                info.status = ContainerStatus.TERMINATED
+                return
+            time.sleep(0.1)
+
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except ProcessLookupError:
+            info.status = ContainerStatus.TERMINATED
+            return
+        except PermissionError:
+            info.status = ContainerStatus.FAILED
+            return
+
+        time.sleep(0.1)
+        if not is_container_running(pid):
+            info.status = ContainerStatus.TERMINATED
+        else:
+            info.status = ContainerStatus.FAILED
+
+    def remove_container(self, name: str, force_stop: bool = True) -> None:
+        """
+        Remove o container da tabela + remove dados em disco.
+        Se force_stop for True tenta parar antes de remover.
+        """
+        info = self.containers.get(name)
+        if not info:
+            raise ValueError(f"Container {name!r} não encontrado.")
+
+        if force_stop and info.pid is not None:
+            try:
+                self.stop_container(name)
+            except Exception:
+                info.status = ContainerStatus.FAILED
+
+        try:
+            remove_container_storage(name)
+        except Exception:
+            pass
+
+        del self.containers[name]
+
     def _current_committed_memory_limit_mb(self) -> int:
-        """
-        Soma os memory_limit_mb dos containers RUNNING.
-        Política simples: usamos o limite configurado, não o uso real.
-        """
         total = 0
         for c in self.containers.values():
             if c.status == ContainerStatus.RUNNING and c.memory_limit_mb is not None:
                 total += c.memory_limit_mb
         return total
-    
-    def _ensure_memory_policy_allows(self, name: str, memory_limit_mb: Optional[int]) -> None:
-        """
-        Aplica a política de admissão de memória.
 
-        Levanta RuntimeError se o novo container não couber dentro
-        da fração configurada de MemTotal.
-        """
+    def _ensure_memory_policy_allows(self, name: str, memory_limit_mb: Optional[int]) -> None:
         requested_mb = memory_limit_mb or 0
         if requested_mb <= 0:
             return
