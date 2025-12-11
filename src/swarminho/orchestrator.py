@@ -1,9 +1,12 @@
-from dataclasses import dataclasses
+from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, TYPE_CHECKING
 
 from src.swarminho.filesystem import read_logs
 from src.swarminho.runtime import start_container, is_container_running, memory_usage_kb
+
+if TYPE_CHECKING:
+    from src.swarminho.metrics import ContainerMetrics
 
 
 class ContainerStatus(str, Enum):
@@ -11,6 +14,7 @@ class ContainerStatus(str, Enum):
     RUNNING = "RUNNING"
     TERMINATED = "TERMINATED"
     FAILED = "FAILED"
+
 
 @dataclass
 class ContainerInfo:
@@ -20,24 +24,14 @@ class ContainerInfo:
     pid: Optional[int] = None
     status: ContainerStatus = ContainerStatus.PENDING
 
+
 class Orchestrator:
     def __init__(self):
         self.containers: Dict[str, ContainerInfo] = {}
+        self.metrics_cache: Dict[str, "ContainerMetrics"] = {}
         
     def create_container(self, name: str, command: str, mem_mb: Optional[int] = None):
-        """_summary_
-
-        Args:
-            name (str): _description_
-            command (str): _description_
-            mem_mb (Optional[int], optional): _description_. Defaults to None.
-
-        Raises:
-            ValueError: _description_
-
-        Returns:
-            _type_: _description_
-        """
+        """Create and start a container process, tracking its metadata."""
         if name in self.containers:
             raise ValueError(f"Container with name {name} already exists.")
         
@@ -51,13 +45,7 @@ class Orchestrator:
 
     def list_containers(self) -> List[ContainerInfo]:
         for container in self.containers.values():
-            if container.pid is None:
-                continue
-            if is_container_running(container.pid):
-                container.status = ContainerStatus.RUNNING
-            else:
-                if container.status == ContainerStatus.RUNNING:
-                    container.status = ContainerStatus.TERMINATED
+            self._refresh_status(container)
         return list(self.containers.values())
 
     def get_logs(self, name: str) -> tuple[str, str]:
@@ -70,3 +58,26 @@ class Orchestrator:
         if not info or info.pid is None:
             return None
         return memory_usage_kb(info.pid)
+
+    def get_metrics(self, name: str) -> "ContainerMetrics":
+        from src.swarminho.metrics import collect_metrics, cpu_percent
+
+        info = self.containers.get(name)
+        if not info:
+            raise ValueError(f"No container found with name {name}.")
+        self._refresh_status(info)
+        current = collect_metrics(info)
+        previous = self.metrics_cache.get(name)
+        if previous:
+            current.cpu_percent = cpu_percent(previous, current)
+        self.metrics_cache[name] = current
+        return current
+
+    def _refresh_status(self, container: ContainerInfo) -> None:
+        """Sync in-memory status with the actual process state."""
+        if container.pid is None:
+            return
+        if is_container_running(container.pid):
+            container.status = ContainerStatus.RUNNING
+        elif container.status == ContainerStatus.RUNNING:
+            container.status = ContainerStatus.TERMINATED

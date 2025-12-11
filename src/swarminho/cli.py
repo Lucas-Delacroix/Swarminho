@@ -1,4 +1,5 @@
 import argparse
+import time
 from typing import Optional, Sequence
 
 from src.swarminho.orchestrator import Orchestrator
@@ -30,6 +31,17 @@ def build_parser() -> argparse.ArgumentParser:
     p_logs.add_argument("name")
     p_logs.set_defaults(handler=handle_logs)
 
+    # swarminho metrics NAME
+    p_metrics = subparsers.add_parser("metrics", help="Mostrar métricas de um container")
+    p_metrics.add_argument("name")
+    p_metrics.add_argument(
+        "--interval",
+        type=float,
+        default=0.0,
+        help="Intervalo em segundos para amostrar CPU%% (ex.: 1.0).",
+    )
+    p_metrics.set_defaults(handler=handle_metrics)
+
     return parser
 
 
@@ -57,6 +69,31 @@ def handle_logs(orch: Orchestrator, args: argparse.Namespace) -> int:
     print(stdout or "(vazio)")
     print("\n=== STDERR ===")
     print(stderr or "(vazio)")
+    return 0
+
+
+def handle_metrics(orch: Orchestrator, args: argparse.Namespace) -> int:
+    metrics = orch.get_metrics(args.name)
+    if metrics.cpu_percent is None and args.interval > 0:
+        time.sleep(args.interval)
+        metrics = orch.get_metrics(args.name)
+
+    print(f"Container: {metrics.name}")
+    print(f"Status: {metrics.status.value}")
+    print(f"PID: {metrics.pid or '-'}")
+    print(
+        "Timestamp (UTC): "
+        f"{metrics.timestamp.isoformat().replace('+00:00', 'Z')}"
+    )
+    print(f"RSS (kB): {metrics.rss_kb if metrics.rss_kb is not None else '-'}")
+    print(f"CPU time (s): {metrics.cpu_time_s if metrics.cpu_time_s is not None else '-'}")
+    print(
+        f"CPU (%): {metrics.cpu_percent:.2f}"
+        if metrics.cpu_percent is not None
+        else "CPU (%): -"
+    )
+    print(f"Logs (bytes): {metrics.log_bytes}")
+    print(f"Rootfs (bytes): {metrics.rootfs_bytes}")
     return 0
 
 
