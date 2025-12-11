@@ -1,4 +1,4 @@
-from dataclasses import dataclasses
+from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional
 
