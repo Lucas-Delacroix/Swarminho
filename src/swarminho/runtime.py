@@ -38,7 +38,7 @@ def is_container_running(pid: int) -> bool:
     except subprocess.CalledProcessError:
         return False
 
-    
+
 def memory_usage_kb(pid: int) -> Optional[int]:
     status_path = Path(f"/proc/{pid}/status")
     if not status_path.exists():
