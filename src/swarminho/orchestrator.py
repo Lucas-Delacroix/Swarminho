@@ -148,13 +148,32 @@ class Orchestrator:
         del self.containers[name]
 
     def _current_committed_memory_limit_mb(self) -> int:
+        """
+        Calcula a soma dos limites de memória (em MB) dos containers RUNNING.
+
+        Política usada:
+        - Considera apenas containers com status RUNNING.
+        - Usa o valor configurado em `memory_limit_mb`, não o uso real de memória.
+
+        """
         total = 0
         for c in self.containers.values():
             if c.status == ContainerStatus.RUNNING and c.memory_limit_mb is not None:
                 total += c.memory_limit_mb
         return total
 
+
     def _ensure_memory_policy_allows(self, name: str, memory_limit_mb: Optional[int]) -> None:
+        """
+        Aplica a política de admissão baseada em memória antes de criar um container.
+
+        A política atual é:
+        - Ler a memória total do sistema (MemTotal, em MB).
+        - Calcular um limite máximo para containers como
+          `MEMORY_THRESHOLD_FRACTION * MemTotal`.
+        - Somar os limites de memória dos containers RUNNING.
+        - Recusar a criação se `comprometido + solicitado` ultrapassar esse limite.
+        """
         requested_mb = memory_limit_mb or 0
         if requested_mb <= 0:
             return
