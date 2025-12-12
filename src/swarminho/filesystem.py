@@ -75,7 +75,7 @@ def prepare_rootfs(name: str, copy_base: bool = False) -> Path:
     rfs.mkdir(parents=True, exist_ok=True)
 
     if copy_base and BASE_ROOTFS.exists():
-        shutil.copytree(BASE_ROOTFS, rfs, dirs_exist_ok=True)
+        shutil.copytree(BASE_ROOTFS, rfs, dirs_exist_ok=True,symlinks=True,ignore_dangling_symlinks=True)
 
     return rfs
 

@@ -11,7 +11,7 @@ from .filesystem import (
 )
 
 def start_container(name:str, command: str, memory_limit_mb: Optional[int] = None) -> int:
-    rootfs: Path = prepare_rootfs(name)
+    rootfs: Path = prepare_rootfs(name, copy_base=True)
     logs_dir: Path = prepare_logs_dir(name)
 
     stdout_f = stdout_log_path(name).open("ab")
