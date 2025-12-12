@@ -1,0 +1,490 @@
+{
+  "name": "cpu_bound",
+  "parameters": {
+    "n_containers": 4,
+    "duration_seconds": 5.0,
+    "memory_limit_mb": 64,
+    "sample_interval": 0.5
+  },
+  "notes": "Workload CPU-bound: v\u00e1rios containers rodando um loop de CPU em Python por alguns segundos.",
+  "snapshots": [
+    {
+      "timestamp": 1765502203.4992118,
+      "label": "before",
+      "orch_metrics": {
+        "total_containers": 0,
+        "running": 0,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 0,
+        "rejected_containers": 0,
+        "peak_running": 0,
+        "committed_memory_limit_mb": 0,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 0,
+        "running_containers_total_cpu_seconds": 0.0,
+        "average_cpu_seconds_per_running_container": null,
+        "average_container_memory_limit_mb": null,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": null,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 40,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502203.5174024,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 11008,
+        "running_containers_total_cpu_seconds": 0.0,
+        "average_cpu_seconds_per_running_container": 0.0,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 0.005159556865692139,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502204.033096,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 1.85,
+        "average_cpu_seconds_per_running_container": 0.4625,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 0.5209383368492126,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502204.5718796,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 3.87,
+        "average_cpu_seconds_per_running_container": 0.9675,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 1.0590874552726746,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502205.085388,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 5.789999999999999,
+        "average_cpu_seconds_per_running_container": 1.4474999999999998,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 1.5732354521751404,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502205.604103,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 7.74,
+        "average_cpu_seconds_per_running_container": 1.935,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 2.0921384692192078,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502204.132158,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 9.67,
+        "average_cpu_seconds_per_running_container": 2.4175,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 0.6197313666343689,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502204.6492193,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 11.610000000000001,
+        "average_cpu_seconds_per_running_container": 2.9025000000000003,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 1.1372663378715515,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502205.1603184,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 13.54,
+        "average_cpu_seconds_per_running_container": 3.385,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 1.6481449007987976,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502205.673059,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 15.46,
+        "average_cpu_seconds_per_running_container": 3.865,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 2.1609053015708923,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502206.1836102,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 17.369999999999997,
+        "average_cpu_seconds_per_running_container": 4.342499999999999,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 2.670892894268036,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502206.700859,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 19.33,
+        "average_cpu_seconds_per_running_container": 4.8325,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 3.1882023215293884,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502207.2128818,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 21.25,
+        "average_cpu_seconds_per_running_container": 5.3125,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 3.7006160616874695,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502207.722604,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 23.169999999999998,
+        "average_cpu_seconds_per_running_container": 5.7924999999999995,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 4.21066826581955,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502208.2326052,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 35840,
+        "running_containers_total_cpu_seconds": 25.09,
+        "average_cpu_seconds_per_running_container": 6.2725,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 4.720558822154999,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 218
+      }
+    },
+    {
+      "timestamp": 1765502208.7472005,
+      "label": "running",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 4,
+        "terminated": 0,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 256,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 0,
+        "running_containers_total_cpu_seconds": 26.28,
+        "average_cpu_seconds_per_running_container": 6.57,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": 5.235180556774139,
+        "average_lifetime_terminated_seconds": null
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 254
+      }
+    },
+    {
+      "timestamp": 1765502208.757005,
+      "label": "after",
+      "orch_metrics": {
+        "total_containers": 4,
+        "running": 0,
+        "terminated": 4,
+        "failed": 0,
+        "pending": 0,
+        "created_count": 4,
+        "rejected_containers": 0,
+        "peak_running": 4,
+        "committed_memory_limit_mb": 0,
+        "memory_policy_limit_mb": 3185,
+        "running_containers_total_rss_kb": 0,
+        "running_containers_total_cpu_seconds": 0.0,
+        "average_cpu_seconds_per_running_container": null,
+        "average_container_memory_limit_mb": 64,
+        "system_total_memory_mb": 15925,
+        "average_uptime_running_seconds": null,
+        "average_lifetime_terminated_seconds": 5.242799878120422
+      },
+      "fs_metrics": {
+        "containers_on_disk": 44,
+        "total_logs_size_bytes": 254
+      }
+    }
+  ],
+  "final_metrics": {
+    "total_containers": 4,
+    "running": 0,
+    "terminated": 4,
+    "failed": 0,
+    "pending": 0,
+    "created_count": 4,
+    "rejected_containers": 0,
+    "peak_running": 4,
+    "committed_memory_limit_mb": 0,
+    "memory_policy_limit_mb": 3185,
+    "running_containers_total_rss_kb": 0,
+    "running_containers_total_cpu_seconds": 0.0,
+    "average_cpu_seconds_per_running_container": null,
+    "average_container_memory_limit_mb": 64,
+    "system_total_memory_mb": 15925,
+    "average_uptime_running_seconds": null,
+    "average_lifetime_terminated_seconds": 5.242799878120422
+  }
+}
