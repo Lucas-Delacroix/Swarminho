@@ -8,7 +8,9 @@ version = "0.1.0"
 description = "Simulação de um Orquestrador de Containers para Estudo de Virtualização em Nível de Sistema Operacional, Gerenciamento de Memória e Sistemas de Arquivos"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "matplotlib"
+]
 
 [project.scripts]
 swarminho = "swarminho.cli:main"
