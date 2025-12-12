@@ -2,7 +2,7 @@ import json
 import os
 import matplotlib.pyplot as plt
 
-file = "results/mem_pressure_2025-12-11_23-39-43.json"
+file = "results/cpu_bound_2025-12-11_22-39-10.json"
 
 with open(file, "r") as f:
     data = json.load(f)
@@ -56,7 +56,7 @@ plt.figure(figsize=(13, 7))
 plt.plot(timestamps, cpu_seconds)
 plt.xlabel("Tempo (s)")
 plt.ylabel("CPU total (segundos)")
-plt.title("CPU usada pelos containers")
+plt.title("Tempo de CPU usada pelos containers")
 plt.grid(True)
 plt.savefig("src/graphics/plots/02-cpu-usada-pelo-tempo.png")
 

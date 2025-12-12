@@ -130,15 +130,7 @@ def _cpu_burn_command(duration_seconds: float) -> str:
     Retorna um comando shell que executa um loop CPU-bound em Python
     por aproximadamente `duration_seconds` segundos.
     """
-    return f"""python - << 'EOF'
-import time
-x = 0
-end = time.time() + {duration_seconds}
-while time.time() < end:
-    x += 1
-print(x)
-EOF
-"""
+    return "bash -c 't=$(date +%s); end=$((t+10)); while [ $(date +%s) -lt $end ]; do :; done'"
 
 
 def experiment_cpu_bound(
