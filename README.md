@@ -1,26 +1,11 @@
 # Swarminho
 Simulação de um Orquestrador de Containers para Estudo de Virtualização em Nível de Sistema Operacional, Gerenciamento de Memória e Sistemas de Arquivos
 
-```
-        :++:                        .++:        
-        *###=                      =####        
-        =#==#*:  .:=*######*=:.  .*#==#+        
-    .++. +#+.+#####-...  ...-#####+.+#+ .++:    
-    =####+=##+*#=.             =##+##++####=    
-    .*#=:=*####.                .####*=:=##.    
-      :*##+=+#. .+#=.       =#+. .#*=+##*:      
-    .=***####+. =##*.      .##*= .+####***+.    
-    .*#+-:.:#+.  -=:        :=-  .+#:.:-+##.    
-      :=*#*++#-    .*+=--=+*.    -#++*#*=:      
-             -##:      ..      :##-             
-               -*##*+======+*##*-               
-                    :-=++=-:.                   
-```
+![Logo Axoloti](swarminhologo.webp)
+
 
 ## Pré-requisitos
-- Linux (o código consulta `/proc` e usa `ulimit`)
-- Python 3.11 ou superior
-- Bash e ferramentas básicas do sistema
+- Linux 
 
 ## Instalação e setup
 Opção rápida (cria `.venv`, instala em modo editável e gera um wrapper `~/.local/bin/swarminho`):
@@ -39,6 +24,9 @@ pip install -e .
 
 ## Comandos principais (`swarminho`)
 Depois de instalar, o entrypoint `swarminho` fica disponível. Você pode rodá-lo em modo interativo ou passando o comando direto.
+
+## Comandos exemplo
+- swarminho run yes1 --mem 64 --cmd 'yes "EU AMO SO" > /dev/null'
 
 ### Shell interativo
 ```bash
