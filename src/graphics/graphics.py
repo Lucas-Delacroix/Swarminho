@@ -2,7 +2,7 @@ import json
 import os
 import matplotlib.pyplot as plt
 
-file = "results/many_small_2025-12-11_22-38-40.json"
+file = "results/mem_pressure_2025-12-11_23-39-43.json"
 
 with open(file, "r") as f:
     data = json.load(f)
