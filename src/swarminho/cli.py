@@ -34,7 +34,7 @@ def build_parser() -> argparse.ArgumentParser:
     # swarminho stats [--watch]
     p_stats = subparsers.add_parser(
         "stats",
-        help="Mostrar métricas de CPU/memória dos containers (estilo docker stats)"
+        help="Mostrar métricas de CPU/memória dos containers"
     )
     p_stats.add_argument(
         "--watch", "-w",
@@ -148,6 +148,7 @@ def handle_stats(orch: Orchestrator, args: argparse.Namespace) -> int:
 
             print("=== swarminho stats (modo watch) ===")
             _print_stats_snapshot(orch, total_mem_mb)
+            time.sleep(1)
     except KeyboardInterrupt:
         print()
         return 0
